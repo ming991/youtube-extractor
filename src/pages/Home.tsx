@@ -53,7 +53,7 @@ const Home: React.FC = () => {
       {error && (
         <div className="max-w-2xl mx-auto mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3 text-red-700 animate-fade-in">
             <AlertTriangle className="shrink-0 mt-0.5" />
-            <div className="text-sm">{error}</div>
+            <div className="text-sm">{typeof error === 'string' ? error : JSON.stringify(error)}</div>
         </div>
       )}
 
