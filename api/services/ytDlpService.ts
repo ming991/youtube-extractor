@@ -243,6 +243,12 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
     if (errorMsg.includes("Sign in to confirm") || errorMsg.includes("bot") || errorMsg.includes("429") || errorMsg.includes("403")) {
        throw new Error("HUMAN_VERIFICATION_REQUIRED");
     }
+    
+    // Better error message for Vercel/Serverless timeout or general failure
+    if (error.code === 1 || error.exitCode === 1) {
+        throw new Error(errorMsg || "Failed to extract video info. This might be due to YouTube's restrictions on data center IPs (Vercel).");
+    }
+
     throw error;
   } finally {
     if (cookieFile) {
