@@ -49,10 +49,13 @@ app.use(
 /**
  * error handler middleware
  */
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Global Error Handler:', error);
   res.status(500).json({
     success: false,
-    error: 'Server internal error',
+    error: error.message || 'Server internal error',
+    code: error.code || '500',
+    details: process.env.NODE_ENV === 'development' ? error.stack : undefined
   })
 })
 
