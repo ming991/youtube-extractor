@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { extractVideoInfo } from '../services/ytDlpService';
+import { extractVideoInfo } from '../services/ytDlpService.js';
 
 const router = Router();
 
