@@ -37,10 +37,12 @@ export interface VideoInfo {
   duration: number;
   channel: string;
   subtitles: string;
+  audio_url?: string;
   formats: {
     resolution: string;
     url: string;
     ext: string;
+    hasAudio?: boolean;
   }[];
 }
 
