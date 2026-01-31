@@ -100,7 +100,12 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
         useHeaderCookie = true;
         // Remove cookies file flag if we are using header method
         delete currentFlags.cookies;
+        
+        // Ensure header cookie string is clean (no whitespace around keys/values if possible, but keep semicolons)
+        // Actually, sometimes passing full header string "Cookie: key=val; ..." works best
+        // But let's just use what user provided.
         currentFlags.addHeader = `Cookie:${cookies}`;
+        
         // Also cleanup the unused cookie file
         if (cookieFile) {
             await fs.unlink(cookieFile).catch(() => {});
