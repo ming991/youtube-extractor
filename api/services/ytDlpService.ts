@@ -243,6 +243,10 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
     if (errorMsg.includes("Sign in to confirm") || errorMsg.includes("bot") || errorMsg.includes("429") || errorMsg.includes("403")) {
        throw new Error("HUMAN_VERIFICATION_REQUIRED");
     }
+
+    if (errorMsg.includes("env: 'python3': No such file") || errorMsg.includes("python3: not found")) {
+       throw new Error("SERVER_CONFIGURATION_ERROR: yt-dlp binary is missing Python dependency or is not the standalone executable.");
+    }
     
     // Better error message for Vercel/Serverless timeout or general failure
     if (error.code === 1 || error.exitCode === 1) {
