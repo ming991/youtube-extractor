@@ -15,8 +15,25 @@ if (process.env.VERCEL) {
     // Vercel deployment: use downloaded binary in bin/yt-dlp
     // We download it to project root 'bin' folder in vercel-build script
     const localBin = path.join(process.cwd(), 'bin', 'yt-dlp');
+    console.log('Vercel environment detected. Checking for binary at:', localBin);
     if (fs.existsSync(localBin)) {
+        console.log('Binary found at:', localBin);
         ytDlpBinary = localBin;
+    } else {
+        console.error('Binary NOT found at:', localBin);
+        // List files in bin to see what's there
+        try {
+            const binDir = path.join(process.cwd(), 'bin');
+            if (fs.existsSync(binDir)) {
+                console.log('Contents of bin:', fs.readdirSync(binDir));
+            } else {
+                console.log('bin directory does not exist at:', binDir);
+            }
+            console.log('Current working directory:', process.cwd());
+            console.log('Root directory contents:', fs.readdirSync(process.cwd()));
+        } catch (e) {
+            console.error('Error listing directories:', e);
+        }
     }
 } else if (fs.existsSync(USER_YT_DLP_PATH)) {
   ytDlpBinary = USER_YT_DLP_PATH;
@@ -105,7 +122,9 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
         // Ensure header cookie string is clean (no whitespace around keys/values if possible, but keep semicolons)
         // Actually, sometimes passing full header string "Cookie: key=val; ..." works best
         // But let's just use what user provided.
-        currentFlags.addHeader = `Cookie:${cookies}`;
+        // Clean up newlines which might break command line arguments
+        const cleanCookies = cookies.replace(/[\r\n]+/g, '').trim();
+        currentFlags.addHeader = `Cookie:${cleanCookies}`;
         
         // Also cleanup the unused cookie file
         if (cookieFile) {
