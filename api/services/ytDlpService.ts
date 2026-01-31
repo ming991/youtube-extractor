@@ -88,7 +88,9 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
     // Netscape format usually has 7 columns separated by tabs.
     // HTTP Header format: "KEY=VALUE; KEY2=VALUE2"
     let useHeaderCookie = false;
-    if (cookies && !cookies.includes('\t') && cookies.includes('=')) {
+    const isNetscape = cookies && (cookies.includes('# Netscape') || cookies.includes('\t'));
+    
+    if (cookies && !isNetscape && cookies.includes('=')) {
         useHeaderCookie = true;
         // Remove cookies file flag if we are using header method
         delete currentFlags.cookies;
