@@ -66,7 +66,12 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
       // Let's assume user provides Netscape format as requested in UI.
       // If the user pastes "key=value; key=value", we can try to format it or just save it.
       // Given the prompt, let's just write it.
-      await fs.writeFile(cookieFile, cookies);
+      let cookieContent = cookies;
+      // Sanitize: If user pasted content without the Netscape header, add it if it looks like columns
+      if (!cookieContent.includes('# Netscape HTTP Cookie File') && cookieContent.includes('\t')) {
+          cookieContent = '# Netscape HTTP Cookie File\n' + cookieContent;
+      }
+      await fs.writeFile(cookieFile, cookieContent);
     }
 
     const flags: any = {
@@ -242,7 +247,7 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
     console.error("yt-dlp error:", error);
     // Check for common verification errors in stderr
     const errorMsg = error.stderr || error.message || '';
-    if (errorMsg.includes("Sign in to confirm") || errorMsg.includes("bot") || errorMsg.includes("429") || errorMsg.includes("403")) {
+    if (errorMsg.includes("Sign in to confirm") || errorMsg.includes("bot") || errorMsg.includes("429") || errorMsg.includes("403") || errorMsg.includes("Requested format is not available")) {
        throw new Error("HUMAN_VERIFICATION_REQUIRED");
     }
 
