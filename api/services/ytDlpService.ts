@@ -78,6 +78,7 @@ export const extractVideoInfo = async (url: string, cookies?: string): Promise<V
       dumpJson: true,
       noWarnings: true,
       skipDownload: true,
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     };
 
     if (cookieFile) {
